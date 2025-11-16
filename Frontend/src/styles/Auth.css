@@ -6,6 +6,8 @@
     border-radius: 10px;
     box-shadow: 0 0 10px #ccc;
     margin: auto;
+    margin-top: 10%;
+    margin-bottom: 10%;
 }
 
 .auth-container h2 {

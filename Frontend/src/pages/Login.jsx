@@ -11,7 +11,7 @@ function Login() {
     const [error, setError] = useState("");
 
     const navigate = useNavigate();
-    const API = import.meta.env.VITE_API_URL; // from .env
+    const API = import.meta.env.VITE_API_URL; 
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,26 +20,25 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
-        navigate("/waiter")
 
-        // try {
-        //     const res = await axios.post(`${API}/login`, formData);
+        try {
+            const res = await axios.post(`${API}/login`, formData);
 
-        //     if (res.data.success) {
-        //         login({
-        //             email: res.data.user.email,
-        //             token: res.data.token,
-        //             role: res.data.user.role,
-        //         });
+            if (res.data.success) {
+                login({
+                    email: res.data.user.email,
+                    token: res.data.token,
+                    role: res.data.user.role,
+                });
 
-        //         navigate("/dashboard");
-        //     } else {
-        //         setError(res.data.message || "Login failed");
-        //     }
-        // } catch (err) {
-        //     console.error("Login error:", err);
-        //     setError(err.response?.data?.message || "Invalid email or password");
-        // }
+                navigate("/waiter");
+            } else {
+                setError(res.data.message || "Login failed");
+            }
+        } catch (err) {
+            console.error("Login error:", err);
+            setError(err.response?.data?.message || "Invalid email or password");
+        }
     };
 
     return (

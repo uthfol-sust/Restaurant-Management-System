@@ -25,7 +25,7 @@ function Signup() {
         setError("");
         try {
             const res = await axios.post(`${API}/register`, formData);
-            if (res.data.success) {
+            if (res.status==201) {
                 navigate("/login");
             } else {
                 setError(res.data.message || "Signup failed");

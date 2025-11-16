@@ -6,6 +6,7 @@ import (
 	"restaurant-system/pkg/config"
 	"restaurant-system/pkg/connection"
 	"restaurant-system/pkg/core"
+	"restaurant-system/pkg/middleware"
 	"restaurant-system/pkg/migrations"
 	"restaurant-system/pkg/routers"
 
@@ -22,8 +23,14 @@ func Serve() {
 	mux := http.NewServeMux()
 
 	controllersRoute := core.InitAppControllers(db)
-	routers.RootRoutes(mux, *controllersRoute)
+	
+	mngr := &middleware.Manager{}
+	mngr.Use(middleware.CorsMiddleware)
 
-	fmt.Println("Sever Runnig on Port 8080")
-	http.ListenAndServe(":8080", mux)
+	routers.RootRoutes(mux, *controllersRoute , mngr)
+
+	handler := mngr.MiddlewareChain(mux)
+
+	fmt.Println("Server Running on Port 8080")
+	http.ListenAndServe(":8080", handler)
 }
