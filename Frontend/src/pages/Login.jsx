@@ -11,7 +11,7 @@ function Login() {
     const [error, setError] = useState("");
 
     const navigate = useNavigate();
-    const API = import.meta.env.VITE_API_URL; 
+    const API = import.meta.env.VITE_API_URL;
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,7 +23,7 @@ function Login() {
 
         try {
             const res = await axios.post(`${API}/login`, formData);
-
+         
             if (res.data.success) {
                 login({
                     email: res.data.user.email,
@@ -31,7 +31,21 @@ function Login() {
                     role: res.data.user.role,
                 });
 
-                navigate("/waiter");
+                const role = res.data.user.role; // FIX
+                console.log(role)
+                if (role === "waiter") {
+                    navigate("/waiter/dashboard");
+                }
+                else if (role === "admin") {
+                    navigate("/admin/dashboard");
+                }
+                else if (role === "kitchen") {
+                    navigate("/kitchen/dashboard");
+                }
+                else {
+                    navigate("/");
+                }
+
             } else {
                 setError(res.data.message || "Login failed");
             }
@@ -73,8 +87,7 @@ function Login() {
                 </form>
 
                 <p>
-                    Don’t have an account?{" "}
-                    <Link to="/signup">Sign up here</Link>
+                    Don’t have an account? <Link to="/signup">Sign up here</Link>
                 </p>
             </div>
         </div>
