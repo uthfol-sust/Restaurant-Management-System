@@ -11,9 +11,15 @@ const Navbar = () => {
                 <span>Restaurant</span> 
             </Link>
             <div className="nav-links">
-                <Link to="/">Home</Link>
-                <Link to="/login">Login</Link>
-                <Link to="/signup">Signup</Link>
+                <Link to="/admin/dashboard" className="link"> My Deshboard </Link>
+                <Link to="/" className="link"> Home </Link>
+                <a href="#our-team" className="link"> Our Team </a>
+                <a href="#abouts" className="link"> Abouts </a>
+            </div>
+            <div className="nav-links">
+                <Link to="/" className="logo">
+                <img src={Logo} alt="Logo" />
+                </Link>
             </div>
         </nav>
     );

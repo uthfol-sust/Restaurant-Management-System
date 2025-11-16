@@ -1,15 +1,13 @@
 .navbar {
     width: 90%;
-    padding: 16px 6%;
+    padding: 10px 6%;
     background: rgba(19, 16, 16, 1);
-   
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: fixed;
     top: 0;
     z-index: 1000;
-    margin: 0;
 }
 
 .logo {
@@ -19,7 +17,7 @@
 }
 
 .logo img {
-    width: 50px;
+    width: 60px;
     height: auto;
 }
 
@@ -30,8 +28,8 @@
 }
 
 .nav-links a {
+    width: 50%;
     color: #fff;
-    margin-left: 24px;
     font-size: 1rem;
     text-decoration: none;
     font-weight: 500;
@@ -39,5 +37,9 @@
 }
 
 .nav-links a:hover {
-    color: #ffcc33;
+    color: #fdc313;
+}
+
+.link{
+ margin-right: 24px;
 }

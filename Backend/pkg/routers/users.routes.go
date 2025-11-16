@@ -21,7 +21,6 @@ func usersRoutes(router *http.ServeMux, userController controllers.UserControlle
 	router.Handle("GET /users",
 		manager.MiddlewareChain(
 			http.HandlerFunc(userController.GetAllUsers),
-			middleware.AuthMiddleware,
 		))
 
 	router.Handle("GET /users/{id}",

@@ -1,7 +1,14 @@
 .web {
-  background-color: #ffb347;
+  background-color: #dae1db;
   font-family:'Times New Roman', Times, serif;
-  margin: 0px;
-  padding: 0px;
+}
+
+body{
+ margin: 0;
+ padding: 0;
+}
+
+html{
+scroll-behavior: smooth;  
 }
 
