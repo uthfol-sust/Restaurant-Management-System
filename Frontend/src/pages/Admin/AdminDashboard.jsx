@@ -29,7 +29,7 @@ const AdminDashboard = () => {
     ];
 
     return (
-        <div className="admin-layout" >
+        <div className="App" >
             <Navbar />
 
             <div className="admin-container">
