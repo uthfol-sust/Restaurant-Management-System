@@ -13,8 +13,17 @@ import Signup from "./pages/Signup";
 import WaiterDashboard from "./pages/Waiter/WaiterDashboard";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import KitchenDashboard from "./pages/Kitchen/KitchenDeshboard";
-
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute.jsx"
+// Admin Pages
+import Users from "./pages/Admin/User.jsx";
+import Products from "./pages/Admin/Products.jsx";
+import Inventory from "./pages/Admin/Inventory.jsx";
+import Orders from "./pages/Admin/Orders.jsx";
+import OrderDetails from "./pages/Admin/OrderDetails.jsx";
+import Payments from "./pages/Admin/Payments.jsx";
+import Suppliers from "./pages/Admin/Suppliers.jsx";
+import Purchases from "./pages/Admin/Purchases.jsx";
+import Reports from "./pages/Admin/Reports.jsx";
 
 function App() {
   return (
@@ -36,11 +45,20 @@ function App() {
                 <ProtectedRoute allowedRoles={["admin"]}>
                   <Routes>
                     <Route path="dashboard" element={<AdminDashboard />} />
-                    {/* <Route path="users" element={<AdminUsers />} /> */}
+                    <Route path="users" element={<Users />} />
+                    <Route path="products" element={<Products />} />
+                    <Route path="inventory" element={<Inventory />} />
+                    <Route path="orders" element={<Orders />} />
+                    <Route path="order-details" element={<OrderDetails />} />
+                    <Route path="payments" element={<Payments />} />
+                    <Route path="suppliers" element={<Suppliers />} />
+                    <Route path="purchases" element={<Purchases />} />
+                    <Route path="reports" element={<Reports />} />
                   </Routes>
                 </ProtectedRoute>
               }
             />
+
 
             <Route
               path="/waiter/*"

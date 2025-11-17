@@ -1,0 +1,52 @@
+.admin-layout {
+    min-height: 100vh;
+    background: #fff3cd;
+    padding-top: 80px;
+}
+
+.admin-container {
+    width: 90%;
+    margin: auto;
+}
+
+.admin-title {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+    margin-bottom: 3rem;
+}
+
+.dashboard-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    text-decoration: none;
+    color: #333;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    background: #ffe5a7;
+}
+
+.card-icon {
+    font-size: 35px;
+    margin-bottom: 10px;
+    color: #d62828;
+}
+
+.count {
+    font-size: 22px;
+    margin-top: 5px;
+    font-weight: bold;
+}

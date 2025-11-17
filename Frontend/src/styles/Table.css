@@ -1,0 +1,50 @@
+.table-container {
+    width: 95%;
+    margin-top: 100px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 3px 12px rgba(0, 0, 0, 0.1);
+}
+
+.table-container h2 {
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table thead {
+    background: #ffcf8a;
+}
+
+table th,
+table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.action-btns button {
+    margin-right: 8px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.view-btn {
+    background: #0077b6;
+    color: white;
+}
+
+.edit-btn {
+    background: #ffb703;
+}
+
+.delete-btn {
+    background: #d62828;
+    color: white;
+}
