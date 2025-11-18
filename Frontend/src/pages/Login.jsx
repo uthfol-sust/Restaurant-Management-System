@@ -22,17 +22,19 @@ function Login() {
         setError("");
 
         try {
-            const res = await axios.post(`${API}/login`, formData);
-         
+            const res = await axios.post(`${API}/login`, formData, { withCredentials: true });
+
             if (res.data.success) {
+                localStorage.setItem("token", res.data.token);
                 login({
+                    id: res.data.user.id,
+                    name: res.data.user.name,
                     email: res.data.user.email,
-                    token: res.data.token,
                     role: res.data.user.role,
+                    token: res.data.token,
                 });
 
-                const role = res.data.user.role; // FIX
-                console.log(role)
+                const role = res.data.user.role;
                 if (role === "waiter") {
                     navigate("/waiter/dashboard");
                 }

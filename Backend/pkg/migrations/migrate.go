@@ -34,6 +34,7 @@ func Migrate(db *sql.DB) error {
 				phone_no VARCHAR(15),
 				role VARCHAR(20) DEFAULT 'Admin',
 				shift_time VARCHAR(50),
+				profile_image VARCHAR(255),
 				join_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 				updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 			);`,
@@ -45,8 +46,9 @@ func Migrate(db *sql.DB) error {
 				product_name VARCHAR(100) NOT NULL,
 				category VARCHAR(50) NOT NULL,
 				price DECIMAL(10,2) NOT NULL,
+				image VARCHAR(255),
 				availability_status VARCHAR(30) DEFAULT 'Out of Stock'
-			)`,
+			);`,
 		},
 		{ //3
 			"inventory",
@@ -56,6 +58,7 @@ func Migrate(db *sql.DB) error {
 				stock DECIMAL(10,2) NOT NULL,
 				unit VARCHAR(20) NOT NULL,
 				level DECIMAL(10,2) NOT NULL,
+				image VARCHAR(255),
 				last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 			);`,
 		},
@@ -156,6 +159,17 @@ func Migrate(db *sql.DB) error {
 					ON UPDATE CASCADE
 					ON DELETE CASCADE
 			);`,
+		},
+		{
+			"customers",
+			`CREATE TABLE IF NOT EXISTS customers (
+				id INT PRIMARY KEY,
+				name VARCHAR(100),
+				phone VARCHAR(20),
+				email VARCHAR(100),
+				profile_image VARCHAR(255)
+			);`,
+
 		},
 
 	}

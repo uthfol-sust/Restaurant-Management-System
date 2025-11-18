@@ -1,8 +1,10 @@
 package services
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"io"
 	"restaurant-system/pkg/models"
 	"restaurant-system/pkg/repositories"
 	"restaurant-system/pkg/utils"
@@ -14,6 +16,7 @@ type UserServices interface {
 	GetAll() ([]models.User, error)
 	GetUserById(id int) (*models.User, error)
 	GetUserByEmail(email string) (*models.User, error)
+	UploadProfile(ctx context.Context, userId string, file io.Reader) (string, error)
 	UpdateUser(id int, user *models.User) (*models.User, error)
 	DeleteUser(id int) error
 }
@@ -77,7 +80,7 @@ func (s *userService) UpdateUser(req_id int, updateUser *models.User) (*models.U
 	updateUser.ID = req_id
 
 	curUser, err := s.userRepo.GetByID(req_id)
-    if err != nil || curUser==nil{
+	if err != nil || curUser == nil {
 		return nil, errors.New("inavild user id")
 	}
 
@@ -107,10 +110,28 @@ func (s *userService) UpdateUser(req_id int, updateUser *models.User) (*models.U
 	}
 
 	err = s.userRepo.Update(curUser)
-    if err != nil{
+	if err != nil {
 		return nil, errors.New("failed to update")
 	}
-	return  curUser , nil
+	return curUser, nil
+}
+
+func (s *userService) UploadProfile(ctx context.Context, userId string, file io.Reader) (string, error) {
+	if userId == "" {
+		return "", errors.New("user_id is required")
+	}
+
+	uploadedURL, err := utils.UploadToCloudinary(ctx, file, "99meal/users")
+	if err != nil {
+		return "", err
+	}
+
+	err = s.userRepo.UpdateProfileImage(userId, uploadedURL)
+	if err != nil {
+		return "", err
+	}
+
+	return uploadedURL, nil
 }
 
 func (s *userService) DeleteUser(id int) error {

@@ -1,0 +1,42 @@
+.kitchen-dashboard {
+    padding: 20px;
+}
+
+.orders-section {
+    margin-bottom: 30px;
+    background: #f7f7f7;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.order-card {
+    background: #fff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.order-actions button {
+    margin-right: 10px;
+    padding: 5px 10px;
+}
+
+.popup-center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
+}
+
+.inventory-add {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}

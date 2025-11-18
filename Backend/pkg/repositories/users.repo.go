@@ -11,6 +11,7 @@ type UserRepository interface {
 	GetByEmail(email string) (*models.User, error)
 	Create(user *models.User) error
 	Update(user *models.User) error
+	UpdateProfileImage(userId, imageURL string) error
 	Delete(id int) error
 }
 
@@ -45,9 +46,9 @@ func (r *userRepository) GetAll() ([]models.User, error) {
 }
 
 func (r *userRepository) GetByID(id int) (*models.User, error) {
-	query := "SELECT id, name, email, password, role , IFNULL(phone_no, '') FROM users WHERE id = ?"
+	query := "SELECT id, name, email, password, role , IFNULL(phone_no, ''), IFNULL(profile_image,'') FROM users WHERE id = ?"
 	user := &models.User{}
-	err := r.db.QueryRow(query, id).Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.Role, &user.PhoneNo)
+	err := r.db.QueryRow(query, id).Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.Role, &user.PhoneNo, &user.Profile_image)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
@@ -72,7 +73,7 @@ func (r *userRepository) GetByEmail(email string) (*models.User, error) {
 
 func (r *userRepository) Create(user *models.User) error {
 	query := "INSERT INTO users (name, email, password,role, phone_no, shift_time) VALUES (?, ?, ?,?,?,?)"
-	result, err := r.db.Exec(query, user.Name, user.Email, user.Password,user.Role,user.PhoneNo,user.ShiftTime)
+	result, err := r.db.Exec(query, user.Name, user.Email, user.Password, user.Role, user.PhoneNo, user.ShiftTime)
 	if err != nil {
 		return err
 	}
@@ -88,6 +89,11 @@ func (r *userRepository) Update(user *models.User) error {
 	query := "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?"
 	_, err := r.db.Exec(query, user.Name, user.Email, user.Password, user.ID)
 
+	return err
+}
+
+func (r *userRepository) UpdateProfileImage(userId, imageURL string) error {
+	_, err := r.db.Exec("UPDATE users SET profile_image=? WHERE id=?", imageURL, userId)
 	return err
 }
 

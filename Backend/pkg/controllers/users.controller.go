@@ -19,6 +19,7 @@ type UserController interface {
 
 	GetUserById(w http.ResponseWriter, r *http.Request)
 	GetUserByEmail(w http.ResponseWriter, r *http.Request)
+	UploadProfile(w http.ResponseWriter, r *http.Request)
 }
 
 type userController struct {
@@ -65,28 +66,20 @@ func (c *userController) Login(w http.ResponseWriter, r *http.Request) {
 
 	token, _ := utils.GenerateToken(isUser.ID, isUser.Name, isUser.Role)
 
-	http.SetCookie(w, &http.Cookie{
-		Name:     "jwt",
-		Value:    token,
-		Path:     "/",
-		HttpOnly: true,
-		Secure:   false,
-		SameSite: http.SameSiteStrictMode,
-		MaxAge:   30,
-	})
-
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
+
 	json.NewEncoder(w).Encode(map[string]interface{}{
-	    "success": true,
+		"success": true,
 		"message": "Login successful",
 		"token":   token,
 		"user": map[string]interface{}{
+			"id":    isUser.ID,
+			"name":  isUser.Name,
 			"email": isUser.Email,
 			"role":  isUser.Role,
 		},
 	})
-
 }
 
 func (c *userController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
@@ -103,6 +96,28 @@ func (c *userController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
+}
+
+func (uc *userController) UploadProfile(w http.ResponseWriter, r *http.Request) {
+	r.ParseMultipartForm(10 << 20)
+
+	file, _, err := r.FormFile("profile_image")
+	if err != nil {
+		http.Error(w, "No image found", http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	userId := r.FormValue("user_id")
+
+	
+	url, err := uc.userService.UploadProfile(r.Context(), userId, file)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	utils.HTTPResponse(w,200,url)
 }
 
 func (c *userController) UpdateUsers(w http.ResponseWriter, r *http.Request) {

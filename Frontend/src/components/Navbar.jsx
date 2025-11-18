@@ -17,7 +17,7 @@ const Navbar = () => {
                 <a href="#abouts" className="link"> Abouts </a>
             </div>
             <div className="nav-links">
-                <Link to="/" className="logo">
+                <Link to="/profile" className="logo">
                 <img src={Logo} alt="Logo" />
                 </Link>
             </div>

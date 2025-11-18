@@ -10,6 +10,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
+
 import WaiterDashboard from "./pages/Waiter/WaiterDashboard";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import KitchenDashboard from "./pages/Kitchen/KitchenDeshboard";
@@ -24,6 +25,7 @@ import Payments from "./pages/Admin/Payments.jsx";
 import Suppliers from "./pages/Admin/Suppliers.jsx";
 import Purchases from "./pages/Admin/Purchases.jsx";
 import Reports from "./pages/Admin/Reports.jsx";
+import ProfilePage from "./pages/Profiles.jsx";
 
 function App() {
   return (
@@ -36,6 +38,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/profile" element={<ProfilePage />} />
 
             {/* Protected Routes */}
 

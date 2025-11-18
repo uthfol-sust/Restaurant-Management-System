@@ -40,7 +40,14 @@ func usersRoutes(router *http.ServeMux, userController controllers.UserControlle
 			http.HandlerFunc(userController.UpdateUsers),
 			middleware.AuthMiddleware,
 		))
-		
+
+	router.Handle("PUT /users/upload/{id}",
+		manager.MiddlewareChain(
+			http.HandlerFunc(userController.UploadProfile),
+			middleware.AuthMiddleware,
+		),
+	)
+
 	router.Handle("DELETE /users/{id}",
 		manager.MiddlewareChain(
 			http.HandlerFunc(userController.DeleteUsers),

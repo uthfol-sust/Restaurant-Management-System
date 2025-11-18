@@ -1,0 +1,68 @@
+.profile-container {
+    width: 400px;
+    margin: 40px auto;
+    padding: 25px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    text-align: center;
+    position: relative;
+}
+
+.avatar-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #eee;
+}
+
+.edit-icon {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: #1e90ff;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 16px;
+    border: 2px solid white;
+    transition: 0.2s;
+}
+
+.edit-icon:hover {
+    background: #0c70d4;
+}
+
+.hidden-file-input {
+    display: none;
+}
+
+.profile-box {
+    margin-top: 20px;
+    background: #f2f6f7;
+    padding: 15px;
+    font-size: 18px;
+    border-radius: 10px;
+}
+
+.edit-bton {
+    margin-top: 25px;
+    background: #28a745;
+    color: white;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+}

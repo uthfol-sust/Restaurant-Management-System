@@ -129,9 +129,7 @@
     background: #258cd1;
 }
 
-/* ================================
-   LIVE KITCHEN ORDERS
-================================ */
+
 .kitchen-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -176,9 +174,7 @@
     color: #444;
 }
 
-/* ================================
-   STATS SECTION
-================================ */
+
 .time-filter {
     display: flex;
     gap: 12px;
