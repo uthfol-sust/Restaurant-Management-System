@@ -12,13 +12,15 @@ import {
     FaWarehouse,
     FaMoneyBill,
     FaTruck,
-    FaBoxOpen
+    FaBoxOpen,
+    FaUserFriends
 } from "react-icons/fa";
 
 const AdminDashboard = () => {
 
     const cards = [
-        { title: "Total Customers", count: 120, icon: <FaUsers />, link: "/admin/users" },
+        { title: "Customers", count: 20, icon: <FaUsers />, link: "/admin/users" },
+        { title: "Staffs", count: 20, icon: <FaUserFriends />, link: "/admin/users" },
         { title: "Total Orders", count: 450, icon: <FaShoppingCart />, link: "/admin/orders" },
         { title: "Available Items", count: 35, icon: <FaUtensils />, link: "/admin/products" },
         { title: "Inventory Stock", count: 78, icon: <FaWarehouse />, link: "/admin/inventory" },

@@ -49,7 +49,10 @@ function App() {
                     <Route path="products" element={<Products />} />
                     <Route path="inventory" element={<Inventory />} />
                     <Route path="orders" element={<Orders />} />
-                    <Route path="order-details" element={<OrderDetails />} />
+
+                    {/* FIXED ROUTE */}
+                    <Route path="order/:id" element={<OrderDetails />} />
+
                     <Route path="payments" element={<Payments />} />
                     <Route path="suppliers" element={<Suppliers />} />
                     <Route path="purchases" element={<Purchases />} />
@@ -58,6 +61,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
 
 
             <Route

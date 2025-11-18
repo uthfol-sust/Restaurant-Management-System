@@ -1,40 +1,173 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../../components/Navbar";
 import "../../styles/Table.css";
 import  "../../styles/Auth.css"
 
 const Users = () => {
-    const users = [
+    const [users, setUsers] = useState([
         { id: 1, name: "John Doe", email: "john@example.com", role: "Waiter", phone: "01710000000" },
         { id: 2, name: "Admin User", email: "admin@rest.com", role: "Admin", phone: "01820000000" },
-    ];
+    ]);
+
+    const [showModal, setShowModal] = useState(false);
+    const [showDeletePopup, setShowDeletePopup] = useState(false);
+
+    const [isEdit, setIsEdit] = useState(false);
+    const [selectedID, setSelectedID] = useState(null);
+
+    const [formData, setFormData] = useState({
+        id: "",
+        name: "",
+        email: "",
+        role: "",
+        phone: "",
+    });
+
+    // ----------------- OPEN EDIT -------------------
+    const openEdit = (u) => {
+        setIsEdit(true);
+        setSelectedID(u.id);
+        setFormData({ ...u });
+        setShowModal(true);
+    };
+
+    // ----------------- SAVE CHANGES -------------------
+    const handleSave = () => {
+        const updatedUsers = users.map((u) =>
+            u.id === selectedID ? formData : u
+        );
+        setUsers(updatedUsers);
+        setShowModal(false);
+    };
+
+    // ----------------- DELETE USER -------------------
+    const confirmDelete = () => {
+        setUsers(users.filter((u) => u.id !== selectedID));
+        setShowDeletePopup(false);
+    };
 
     return (
         <div className="App">
             <Navbar />
+
             <div className="table-container">
                 <h2>Users Management</h2>
 
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Phone</th><th>Actions</th>
+                            <th>ID</th><th>Name</th><th>Email</th>
+                            <th>Role</th><th>Phone</th><th>Actions</th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        {users.map(u => (
+                        {users.map((u) => (
                             <tr key={u.id}>
-                                <td>{u.id}</td><td>{u.name}</td><td>{u.email}</td>
-                                <td>{u.role}</td><td>{u.phone}</td>
+                                <td>{u.id}</td>
+                                <td>{u.name}</td>
+                                <td>{u.email}</td>
+                                <td>{u.role}</td>
+                                <td>{u.phone}</td>
+
                                 <td className="action-btns">
-                                    <button className="edit-btn">Edit</button>
-                                    <button className="delete-btn">Delete</button>
+                                    <button className="edit-btn" onClick={() => openEdit(u)}>
+                                        Edit
+                                    </button>
+
+                                    <button
+                                        className="delete-btn"
+                                        onClick={() => {
+                                            setSelectedID(u.id);
+                                            setShowDeletePopup(true);
+                                        }}
+                                    >
+                                        Delete
+                                    </button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
+
+            {/* ----------------- EDIT POPUP ------------------- */}
+            {showModal && (
+                <div className="modal-overlay">
+                    <div className="modal">
+                        <h3>Edit User</h3>
+
+                        <input
+                            type="text"
+                            placeholder="Name"
+                            value={formData.name}
+                            onChange={(e) =>
+                                setFormData({ ...formData, name: e.target.value })
+                            }
+                        />
+
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={formData.email}
+                            onChange={(e) =>
+                                setFormData({ ...formData, email: e.target.value })
+                            }
+                        />
+
+                        <input
+                            type="text"
+                            placeholder="Role"
+                            value={formData.role}
+                            onChange={(e) =>
+                                setFormData({ ...formData, role: e.target.value })
+                            }
+                        />
+
+                        <input
+                            type="text"
+                            placeholder="Phone"
+                            value={formData.phone}
+                            onChange={(e) =>
+                                setFormData({ ...formData, phone: e.target.value })
+                            }
+                        />
+
+                        <div className="modal-actions">
+                            <button className="save-btn" onClick={handleSave}>
+                                Save
+                            </button>
+
+                            <button className="cancel-btn" onClick={() => setShowModal(false)}>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* ----------------- DELETE CONFIRMATION POPUP ------------------- */}
+            {showDeletePopup && (
+                <div className="modal-overlay">
+                    <div className="modal delete-modal">
+                        <h3>Delete User</h3>
+                        <p>Are you sure you want to delete this user?</p>
+
+                        <div className="modal-actions">
+                            <button className="delete-btn" onClick={confirmDelete}>
+                                Delete
+                            </button>
+
+                            <button
+                                className="cancel-btn"
+                                onClick={() => setShowDeletePopup(false)}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
