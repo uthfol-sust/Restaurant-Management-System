@@ -26,7 +26,7 @@
    GENERIC CARD STYLE
 ================================ */
 .card.section-card {
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.9);
     padding: 25px;
     margin-bottom: 30px;
     border-radius: 18px;
@@ -42,6 +42,7 @@
     gap: 8px;
     color: #333;
 }
+
 
 /* ================================
    CUSTOMER FORM
@@ -74,6 +75,7 @@
 .save-btn:hover {
     background: #29b765;
 }
+
 
 /* ================================
    MENU ITEMS GRID
@@ -130,6 +132,9 @@
 }
 
 
+/* ================================
+   LIVE KITCHEN ORDERS
+================================ */
 .kitchen-list {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -175,6 +180,9 @@
 }
 
 
+/* ================================
+   TIME FILTER BUTTONS
+================================ */
 .time-filter {
     display: flex;
     gap: 12px;
@@ -199,6 +207,10 @@
     border-color: #3498db;
 }
 
+
+/* ================================
+   STATS SECTION
+================================ */
 .stats-row {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -228,4 +240,73 @@
     font-size: 20px;
     font-weight: 700;
     color: #111;
+}
+
+
+/* =====================================
+   ORDER CART (NEW SECTION)
+====================================== */
+.order-cart {
+    margin-top: 20px;
+}
+
+.order-cart h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.order-item {
+    background: #fff;
+    padding: 14px;
+    border-radius: 12px;
+    box-shadow: 0px 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-item-left h5 {
+    margin: 0;
+}
+
+.order-item-left p {
+    font-size: 14px;
+    color: #555;
+}
+
+.qty-btns {
+    display: flex;
+    gap: 6px;
+}
+
+.qty-btns button {
+    background: #eee;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.remove-btn {
+    background: #e74c3c;
+    color: #fff !important;
+}
+
+.send-kitchen-btn {
+    margin-top: 15px;
+    background: #27ae60;
+    padding: 12px;
+    border: none;
+    color: white;
+    border-radius: 10px;
+    width: 100%;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.send-kitchen-btn:hover {
+    background: #1f8e50;
 }
