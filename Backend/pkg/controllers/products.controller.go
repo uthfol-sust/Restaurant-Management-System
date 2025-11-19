@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -14,6 +16,7 @@ type ProductController interface {
 	GetAllProduct(w http.ResponseWriter, r *http.Request)
 	GetProductById(w http.ResponseWriter, r *http.Request)
 	UpdateProduct(w http.ResponseWriter, r *http.Request)
+	UploadProduct(w http.ResponseWriter, r *http.Request)
 	DeleteProduct(w http.ResponseWriter, r *http.Request)
 }
 
@@ -36,7 +39,10 @@ func (c *productController) CreateProduct(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	utils.HTTPResponse(w, 201, createdProduct)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": true,
+		"data":    createdProduct,
+	})
 }
 
 func (c *productController) GetAllProduct(w http.ResponseWriter, r *http.Request) {
@@ -82,6 +88,28 @@ func (c *productController) UpdateProduct(w http.ResponseWriter, r *http.Request
 	}
 
 	utils.HTTPResponse(w, 200, updatedProduct)
+}
+
+func (pc *productController) UploadProduct(w http.ResponseWriter, r *http.Request) {
+	r.ParseMultipartForm(10 << 20)
+
+	file, _, err := r.FormFile("image")
+	if err != nil {
+		http.Error(w, "No image found", http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	Id := r.FormValue("product_id")
+
+	url, err := pc.productService.UploadProduct(r.Context(), Id, file)
+	if err != nil {
+		log.Println("UploadProduct error:", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	utils.HTTPResponse(w, 200, url)
 }
 
 func (c *productController) DeleteProduct(w http.ResponseWriter, r *http.Request) {

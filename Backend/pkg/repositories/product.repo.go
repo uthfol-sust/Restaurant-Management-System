@@ -11,6 +11,7 @@ type ProductRepository interface {
 	GetAllProduct() ([]models.Product, error)
 	GetProductById(id int) (*models.Product, error)
 	UpdateProduct(id int, product *models.Product) (*models.Product, error)
+	UpdateProductImage(id int, imageURL string) error
 	DeleteProduct(id int) error
 }
 
@@ -43,7 +44,7 @@ func (p *productRepository) CreateProduct(product *models.Product) (*models.Prod
 func (p *productRepository) GetAllProduct() ([]models.Product, error) {
 	var products []models.Product
 
-	query := `SELECT product_id, product_name, category, price, availability_status FROM products`
+	query := `SELECT product_id, product_name, category, price, availability_status , IFNULL(image ,"")FROM products`
 
 	rows, err := p.db.Query(query)
 	if err != nil {
@@ -54,7 +55,7 @@ func (p *productRepository) GetAllProduct() ([]models.Product, error) {
 	for rows.Next() {
 		product := &models.Product{}
 
-		err := rows.Scan(&product.ProductID, &product.ProductName, &product.Category, &product.Price, &product.AvailabilityStatus)
+		err := rows.Scan(&product.ProductID, &product.ProductName, &product.Category, &product.Price, &product.AvailabilityStatus,&product.Image)
 		if err != nil {
 			return nil, err
 		}
@@ -67,10 +68,10 @@ func (p *productRepository) GetAllProduct() ([]models.Product, error) {
 func (p *productRepository) GetProductById(id int) (*models.Product, error) {
 	product := &models.Product{}
 
-	query := `SELECT product_name, category, price, availability_status FROM products WHERE product_id=?`
+	query := `SELECT product_name, category, price, availability_status,IFNULL(image ,"") FROM products WHERE product_id=?`
 
 	row := p.db.QueryRow(query, id)
-	err := row.Scan(&product.ProductName, &product.Category, &product.Price, &product.AvailabilityStatus)
+	err := row.Scan(&product.ProductName, &product.Category, &product.Price, &product.AvailabilityStatus, &product.Image)
 
 	if err == sql.ErrNoRows {
 		return nil, errors.New("product not found")
@@ -84,7 +85,7 @@ func (p *productRepository) GetProductById(id int) (*models.Product, error) {
 func (p *productRepository) UpdateProduct(id int ,product *models.Product) (*models.Product , error){
   query := `
 		UPDATE products 
-		SET product_name = ?, category = ?, price = ?, availability_status = ?
+		SET product_name = ?, category = ?, price = ?, availability_status = ? 
 		WHERE product_id = ?
 	`
 	_, err := p.db.Exec(query,
@@ -101,6 +102,11 @@ func (p *productRepository) UpdateProduct(id int ,product *models.Product) (*mod
 	product.ProductID = id
 
 	return product, nil
+}
+
+func (r *productRepository) UpdateProductImage(id int, imageURL string) error {
+	_, err := r.db.Exec("UPDATE products SET image=? WHERE product_id=?", imageURL, id)
+	return err
 }
 
 func (p *productRepository) DeleteProduct(id int) error{

@@ -35,6 +35,13 @@ func productRoutes(router *http.ServeMux, controller controllers.ProductControll
 		),
 	)
 
+	router.Handle("PUT /products/upload/{id}",
+		manager.MiddlewareChain(
+			http.HandlerFunc(controller.UploadProduct),
+			middleware.AuthMiddleware,
+		),
+	)
+
 	router.Handle("DELETE /products/{id}",
 		manager.MiddlewareChain(
 			http.HandlerFunc(controller.DeleteProduct),

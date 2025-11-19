@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import "../../styles/WaiterDashboard.css";
+import { getProducts } from "../../api/ProductApi";
+
 import {
     FaUsers,
     FaUtensils,
@@ -16,6 +19,23 @@ const WaiterDashboard = () => {
         email: "",
     });
 
+    const [menuItems, setMenuItems] = useState([]);
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        const fetchProducts = async () => {
+        try {
+            const response = await getProducts(token);
+            if (response.data.success) {
+            setMenuItems(response.data.data);
+            }
+        } catch (error) {
+            console.error("Error fetching products:", error);
+        }
+        };
+        fetchProducts();
+    }, []);
+
     const handleCustomerChange = (e) => {
         setCustomer({ ...customer, [e.target.name]: e.target.value });
     };
@@ -28,16 +48,7 @@ const WaiterDashboard = () => {
         alert("Customer Saved Successfully!");
     };
 
-    // ------------------------------
-    // MENU ITEMS (STATIC)
-    // ------------------------------
-    const menuItems = [
-        { id: 1, name: "Chicken Biriyani", price: 220, img: "https://i.imgur.com/hX3X4Vf.jpeg" },
-        { id: 2, name: "Beef Tehari", price: 250, img: "https://i.imgur.com/7iKjQJp.jpeg" },
-        { id: 3, name: "Cold Coffee", price: 150, img: "https://i.imgur.com/wn8cHfE.jpeg" },
-        { id: 4, name: "Chicken Burger", price: 180, img: "https://i.imgur.com/suG1M5S.jpeg" },
-    ];
-
+    
     // ------------------------------
     // ADD ORDER LOGIC
     // ------------------------------
@@ -163,15 +174,27 @@ const WaiterDashboard = () => {
                     <h3><FaUtensils /> Menu Items</h3>
 
                     <div className="menu-grid">
-                        {menuItems.map((item) => (
-                            <div className="menu-item" key={item.id}>
-                                <img src={item.img} alt={item.name} />
-                                <h4>{item.name}</h4>
-                                <p>Price: {item.price} TK</p>
-                                <button onClick={() => addOrder(item)} className="order-btn">Add Order</button>
+                        {menuItems.slice(0,4).map((item) => (
+                            <div className="menu-item" key={item.product_id}>
+                            <img className="product-img" src={item.image} alt={item.product_name} />
+                            <h4>{item.product_name}</h4>
+                            <p>Price: {item.price} TK</p>
+                            <p>Status: {item.availability_status}</p>
+                            <button
+                                onClick={() => addOrder({
+                                id: item.product_id,
+                                name: item.product_name,
+                                price: item.price
+                                })}
+                                className="order-btn"
+                                disabled={item.availability_status !== "Available"}
+                            >
+                                {item.availability_status === "Available" ? "Add Order" : "Unavailable"}
+                            </button>
                             </div>
                         ))}
                     </div>
+                   <Link to="/allproducts" className="view-btn">View All</Link>
                 </div>
 
                 {/* ---------------------- */}

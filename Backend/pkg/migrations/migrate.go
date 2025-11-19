@@ -47,7 +47,7 @@ func Migrate(db *sql.DB) error {
 				category VARCHAR(50) NOT NULL,
 				price DECIMAL(10,2) NOT NULL,
 				image VARCHAR(255),
-				availability_status VARCHAR(30) DEFAULT 'Out of Stock'
+				availability_status VARCHAR(30) DEFAULT 'Available'
 			);`,
 		},
 		{ //3

@@ -25,7 +25,7 @@ func GenerateToken(u_Id int, u_Name, u_Role string) (string, error) {
 		Role: u_Role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "MyTaskManager",
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(5 * time.Minute)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(60 * time.Minute)),
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

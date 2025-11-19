@@ -1,44 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import "../../styles/Table.css";
 import "../../styles/Auth.css";
 import "../../styles/products.css";
 
-const Inventory = () => {
-    const [inventory, setInventory] = useState([
-        { id: 1, item: "Chicken", stock: 20, unit: "kg", level: 5, updated: "2025-01-05" },
-        { id: 2, item: "Oil", stock: 10, unit: "L", level: 3, updated: "2025-01-01" },
-    ]);
+import { getInventories, createInventory, updateInventory, deleteInventory } from "../../api/inventoryApi";
 
+const Inventory = () => {
+    const [inventory, setInventory] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
-
     const [isEdit, setIsEdit] = useState(false);
     const [selectedID, setSelectedID] = useState(null);
-
     const [newItem, setNewItem] = useState({
         id: "",
         item: "",
         stock: "",
         unit: "",
         level: "",
-        updated: "",
+        last_updated: "",
     });
+
+    const getNextID = () => {
+    if (!inventory || inventory.length === 0) return 1;
+    const maxID = Math.max(...inventory.map(i => i.id));
+    return maxID + 1;
+   };
+
+    useEffect(() => {
+        const fetchInventory = async () => {
+            try {
+                const data = await getInventories();
+                setInventory(data.data);
+            } catch (err) {
+                console.error("Error fetching inventory:", err);
+                setInventory([]);
+            }
+        };
+        fetchInventory();
+    }, []);
 
     const openAdd = () => {
         setIsEdit(false);
         setNewItem({
-            id: inventory.length + 1,
+            id: getNextID(),
             item: "",
             stock: "",
             unit: "",
             level: "",
-            updated: new Date().toISOString().split("T")[0],
+            last_updated: new Date().toISOString().split("T")[0],
         });
         setShowModal(true);
     };
 
-    // ---------- OPEN EDIT POPUP ----------
     const openEdit = (item) => {
         setIsEdit(true);
         setSelectedID(item.id);
@@ -46,23 +60,30 @@ const Inventory = () => {
         setShowModal(true);
     };
 
-    // ---------- SAVE ITEM ----------
-    const handleSave = () => {
-        if (isEdit) {
-            const updated = inventory.map((i) =>
-                i.id === selectedID ? newItem : i
-            );
-            setInventory(updated);
-        } else {
-            setInventory([...inventory, newItem]);
+    const handleSave = async () => {
+        try {
+            if (isEdit) {
+                await updateInventory(selectedID, newItem);
+                setInventory(inventory.map(i => i.id === selectedID ? newItem : i));
+            } else {
+                const savedItem = await createInventory(newItem);
+                setInventory([...inventory, savedItem.data]);
+            }
+            setShowModal(false);
+        } catch (err) {
+            console.error("Error saving item:", err);
         }
-        setShowModal(false);
     };
 
-    // ---------- DELETE ----------
-    const confirmDelete = () => {
-        setInventory(inventory.filter((i) => i.id !== selectedID));
-        setShowDeletePopup(false);
+
+    const confirmDelete = async () => {
+        try {
+            await deleteInventory(selectedID);
+            setInventory(inventory.filter(i => i.id !== selectedID));
+            setShowDeletePopup(false);
+        } catch (err) {
+            console.error("Error deleting item:", err);
+        }
     };
 
     return (
@@ -77,23 +98,30 @@ const Inventory = () => {
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th><th>Item</th><th>Stock</th>
-                            <th>Unit</th><th>Reorder Level</th><th>Last Updated</th><th>Actions</th>
+                            <th>ID</th>
+                            <th>Item</th>
+                            <th>Stock</th>
+                            <th>Unit</th>
+                            <th>Reorder Level</th>
+                            <th>Last Updated</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {inventory.map(i => (
-                            <tr key={i.id}>
-                                <td>{i.id}</td><td>{i.item}</td><td>{i.stock}</td>
-                                <td>{i.unit}</td><td>{i.level}</td><td>{i.updated}</td>
+                        {inventory?.map((i ,index) => (
+                            <tr key={index}>
+                                <td>{i.id}</td>
+                                <td>{i.item}</td>
+                                <td>{i.stock}</td>
+                                <td>{i.unit}</td>
+                                <td>{i.level}</td>
+                                <td>{i.last_updated}</td>
                                 <td className="action-btns">
                                     <button className="edit-btn" onClick={() => openEdit(i)}>Edit</button>
                                     <button className="delete-btn" onClick={() => {
                                         setSelectedID(i.id);
                                         setShowDeletePopup(true);
-                                    }}>
-                                        Delete
-                                    </button>
+                                    }}>Delete</button>
                                 </td>
                             </tr>
                         ))}
@@ -101,18 +129,11 @@ const Inventory = () => {
                 </table>
             </div>
 
-            {/* ---------- ADD/EDIT POPUP ---------- */}
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal">
                         <h3>{isEdit ? "Edit Inventory Item" : "Add New Inventory Item"}</h3>
 
-                        <input
-                            type="number"
-                            placeholder="ID"
-                            value={newItem.id}
-                            readOnly
-                        />
                         <input
                             type="text"
                             placeholder="Item Name"
@@ -125,25 +146,22 @@ const Inventory = () => {
                             value={newItem.stock}
                             onChange={(e) => setNewItem({ ...newItem, stock: Number(e.target.value) })}
                         />
-
                         <input
                             type="text"
                             placeholder="Unit"
                             value={newItem.unit}
                             onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
                         />
-
                         <input
                             type="number"
                             placeholder="Reorder Level"
                             value={newItem.level}
                             onChange={(e) => setNewItem({ ...newItem, level: Number(e.target.value) })}
                         />
-
                         <input
                             type="date"
-                            value={newItem.updated}
-                            onChange={(e) => setNewItem({ ...newItem, updated: e.target.value })}
+                            value={newItem.last_updated}
+                            onChange={(e) => setNewItem({ ...newItem, last_updated: e.target.value })}
                         />
 
                         <div className="modal-actions">
@@ -154,7 +172,6 @@ const Inventory = () => {
                 </div>
             )}
 
-            {/* ---------- DELETE CONFIRMATION POPUP ---------- */}
             {showDeletePopup && (
                 <div className="modal-overlay">
                     <div className="modal delete-modal">

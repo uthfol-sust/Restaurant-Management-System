@@ -16,10 +16,6 @@ const Orders = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
 
-    const openUpdate = (order) => {
-        setSelectedOrder(order);
-        setShowModal(true);
-    };
 
     const handleUpdate = () => {
         const updated = orders.map(o =>
@@ -58,14 +54,7 @@ const Orders = () => {
                                         className="view-btn"
                                         onClick={() => navigate(`/admin/order/${o.id}`)}
                                     >
-                                        View
-                                    </button>
-
-                                    <button
-                                        className="edit-btn"
-                                        onClick={() => openUpdate(o)}
-                                    >
-                                        Update
+                                        View Details
                                     </button>
                                 </td>
                             </tr>
@@ -74,7 +63,6 @@ const Orders = () => {
                 </table>
             </div>
 
-            {/* ---------- UPDATE ORDER POPUP ---------- */}
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal">

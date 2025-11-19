@@ -46,9 +46,7 @@ const ProfilePage = () => {
         try {
             const token = localStorage.getItem("token");
 
-            const res = await axios.put(
-                `${API}/users/upload/${user.id}`,
-                formData,
+            const res = await axios.put(`${API}/users/upload/${user.id}`,formData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
