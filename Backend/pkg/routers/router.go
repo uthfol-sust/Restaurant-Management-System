@@ -22,4 +22,6 @@ func RootRoutes(router *http.ServeMux, controllers core.AppControllers, mngr *mi
 	PurchaseRoutes(router, controllers.Purchase, mngr)
 	PaymentRoutes(router, controllers.Payment, mngr)
 
+	CustomerRoutes(router, controllers.Customer , mngr)
+
 }

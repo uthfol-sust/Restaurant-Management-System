@@ -26,7 +26,7 @@ func NewUserRepository(db *sql.DB) *userRepository {
 }
 
 func (r *userRepository) GetAll() ([]models.User, error) {
-	query := "SELECT id, name, email, password FROM users"
+	query := "SELECT id, name, email,IFNULL(role,''), IFNULL(phone_no,''), password FROM users"
 	rows, err := r.db.Query(query)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (r *userRepository) GetAll() ([]models.User, error) {
 	var users []models.User
 	for rows.Next() {
 		var user models.User
-		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password)
+		err := rows.Scan(&user.ID, &user.Name, &user.Email,&user.Role, &user.PhoneNo, &user.Password)
 		if err != nil {
 			return nil, err
 		}

@@ -95,7 +95,7 @@ func (c *userController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(users)
+	utils.HTTPResponse(w,200,users)
 }
 
 func (uc *userController) UploadProfile(w http.ResponseWriter, r *http.Request) {

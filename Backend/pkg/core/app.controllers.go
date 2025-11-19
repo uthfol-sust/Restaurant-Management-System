@@ -17,6 +17,7 @@ type AppControllers struct {
 	OrderDetails     controllers.OrderDetailController
 	Purchase         controllers.PurchaseController
 	Payment          controllers.PaymentController
+	Customer         controllers.CustomerController
 }
 
 func InitAppControllers(db *sql.DB) *AppControllers {
@@ -29,6 +30,7 @@ func InitAppControllers(db *sql.DB) *AppControllers {
 	orderDetailsRepo := repositories.NewOrderDetailRepo(db)
 	purchaseRepo := repositories.NewPurchaseRepo(db)
 	paymentRepo := repositories.NewPaymentRepo(db)
+	customerRepo := repositories.NewCustomerRepository(db)
 
 	userService := services.NewUserService(userRepo)
 	productService := services.NewProductService(productRepo)
@@ -39,6 +41,7 @@ func InitAppControllers(db *sql.DB) *AppControllers {
 	orderDetailService := services.NewOrderDetailService(orderDetailsRepo)
 	purchaseService := services.NewPurchaseService(purchaseRepo)
 	paymentService := services.NewPaymentService(paymentRepo)
+	customerService := services.NewCustomerService(customerRepo)
 
 	return &AppControllers{
 		Users:            controllers.NewUserController(userService),
@@ -50,5 +53,6 @@ func InitAppControllers(db *sql.DB) *AppControllers {
 		OrderDetails:     controllers.NewOrderDetailController(orderDetailService),
 		Purchase:         controllers.NewPurchaseController(purchaseService),
 		Payment:          controllers.NewPaymentController(paymentService),
+		Customer:        controllers.NewCustomerController(customerService),
 	}
 }
