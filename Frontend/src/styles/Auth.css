@@ -1,4 +1,4 @@
-/* signup and login css */
+
 .auth-container {
     width: 40%;
     padding: 2rem;
@@ -46,11 +46,10 @@
     margin-top: 1rem;
 }
 
-.App {
+.app {
     font-family: 'Times New Roman', Times, serif;
     min-height: 80vh;
     display: flex;
-    flex-direction: column;
 }
 
 .page-content {

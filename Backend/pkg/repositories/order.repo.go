@@ -22,17 +22,30 @@ func NewOrderRepo(db *sql.DB) OrdersRepo {
 	return &orderRepo{db: db}
 }
 
-func (r *orderRepo) CreateOrder(o *models.Order) (*models.Order, error) {
-	formattedTime := o.OrderTime.Format("2006-01-02 15:04:05")
+func (r *orderRepo) CreateOrder(order *models.Order) (*models.Order, error) {
+    formattedTime := order.OrderTime.Format("2006-01-02 15:04:05")
 
-	query := `INSERT INTO orders (order_id, waiter_id, customer_id, order_time, status, total_amount)
-	VALUES (?, ?, ?, ?, ?, ?)`
+    query := `
+        INSERT INTO orders (waiter_id, customer_id, table_no, order_time, status, total_amount)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `
 
-	_, err := r.db.Exec(query, o.OrderID, o.WaiterID, o.CustomerID, formattedTime, o.Status, o.TotalAmount)
-	if err != nil {
-		return nil, err
-	}
-	return o, nil
+    res, err := r.db.Exec(query,
+        order.WaiterID,
+        order.CustomerID,
+        order.TableNo,
+        formattedTime,
+        order.Status,
+        order.TotalAmount,
+    )
+    if err != nil {
+        return nil, err
+    }
+
+    id, _ := res.LastInsertId()
+    order.OrderID = id
+
+    return order, nil
 }
 
 func (r *orderRepo) GetAllOrders() ([]models.Order, error) {

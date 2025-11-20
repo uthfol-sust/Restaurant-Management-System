@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"restaurant-system/pkg/models"
 	"restaurant-system/pkg/services"
@@ -28,11 +29,15 @@ func (c *orderController) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	order := &models.Order{}
 	utils.ParseBody(r, order)
 
+	fmt.Println(order)
+
 	createdOrder, err := c.orderService.CreateOrder(order)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
+
+	fmt.Println(createdOrder)
 
 	utils.HTTPResponse(w, 201, createdOrder)
 }

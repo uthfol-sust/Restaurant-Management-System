@@ -1,12 +1,18 @@
+.App {
+    font-family: 'Times New Roman', Times, serif;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
 .admin-layout {
     min-height: 100vh;
     background: #fff3cd;
-    padding-top: 80px;
 }
 
 .admin-container {
     width: 90%;
     margin: auto;
+    margin-top: 50px;
 }
 
 .admin-title {
@@ -45,8 +51,9 @@
     color: #d62828;
 }
 
-.count {
+.countnum {
     font-size: 22px;
     margin-top: 5px;
     font-weight: bold;
+
 }

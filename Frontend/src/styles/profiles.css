@@ -1,3 +1,11 @@
+.App {
+    font-family: 'Times New Roman', Times, serif;
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 50px;
+}
+
 .profile-container {
     width: 400px;
     margin: 40px auto;
@@ -7,6 +15,24 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
     text-align: center;
     position: relative;
+}
+
+.logout-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: #c0392b;
 }
 
 .avatar-wrapper {

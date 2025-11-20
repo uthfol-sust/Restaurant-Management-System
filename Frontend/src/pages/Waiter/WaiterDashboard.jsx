@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import "../../styles/WaiterDashboard.css";
 import { getProducts } from "../../api/ProductApi";
+import { createCustomer } from "../../api/customersApi";
 
 import {
     FaUsers,
@@ -12,6 +13,8 @@ import {
     FaClock,
 } from "react-icons/fa";
 
+import { createOrder, } from "../../api/ordersApi";
+
 const WaiterDashboard = () => {
     const [customer, setCustomer] = useState({
         name: "",
@@ -20,38 +23,62 @@ const WaiterDashboard = () => {
     });
 
     const [menuItems, setMenuItems] = useState([]);
+    const [savedCustomerId, setSavedCustomerId] = useState(null);
+    const [waiterId, setWaiterId] = useState(null);
+
+
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-        const fetchProducts = async () => {
+        const fetch = async () => {
         try {
             const response = await getProducts(token);
             if (response.data.success) {
             setMenuItems(response.data.data);
             }
+
+            const payload = JSON.parse(atob(token.split(".")[1])); 
+            setWaiterId(payload.ID || payload.id); 
+        
         } catch (error) {
             console.error("Error fetching products:", error);
         }
         };
-        fetchProducts();
+        fetch();
     }, []);
 
     const handleCustomerChange = (e) => {
         setCustomer({ ...customer, [e.target.name]: e.target.value });
     };
 
-    const saveCustomer = () => {
-        if (!customer.name || !customer.phone) {
-            alert("Name and phone are required");
-            return;
-        }
-        alert("Customer Saved Successfully!");
-    };
+    const payload = {
+            name: customer.name,
+            phone: customer.phone,
+            email: customer.email,
+        };
 
-    
-    // ------------------------------
-    // ADD ORDER LOGIC
-    // ------------------------------
+    const saveCustomer = async () => {
+    if (!customer.name || !customer.phone) {
+        alert("Name and phone are required");
+        return;
+    }
+
+    try {
+        const token = localStorage.getItem("token");
+        const response = await createCustomer(payload, token);
+        const newCustomerId = response.data.data;
+        console.log(newCustomerId)
+        if (response.data.success) {
+            setSavedCustomerId(newCustomerId.id);
+            alert("Customer Saved Successfully!");
+            setCustomer({ name: "", phone: "", email: "" });
+        }
+    } catch (error) {
+        console.error("Customer Save Error:", error);
+        alert("Failed to save customer.");
+    }
+};
+
     const [currentOrders, setCurrentOrders] = useState([]);
 
     const addOrder = (item) => {
@@ -96,9 +123,6 @@ const WaiterDashboard = () => {
         return currentOrders.reduce((sum, o) => sum + o.qty * o.price, 0);
     };
 
-    // ---------------------------------------
-    // LIVE KITCHEN ORDERS (Dummy)
-    // ---------------------------------------
     const [kitchenOrders, setKitchenOrders] = useState([
         { id: 1, table: 4, item: "Chicken Curry", status: "RECEIVED", reason: "" },
         { id: 2, table: 2, item: "Beef Fry", status: "READY IN 5 MIN", reason: "" },
@@ -108,14 +132,48 @@ const WaiterDashboard = () => {
 
     const [tableNumber, setTableNumber] = useState("");
 
-    const sendToKitchen = () => {
+    const sendToKitchen = async () => {
+        if (!savedCustomerId) {
+            alert("Please save customer first!");
+            return;
+        }
+
         if (!tableNumber) {
             alert("Please enter table number!");
             return;
         }
+
         if (currentOrders.length === 0) {
             alert("No items added!");
             return;
+        }
+
+        if (!waiterId) {
+            alert("Waiter ID missing (token issue)");
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+        const total = calculateTotal();
+
+        const orderPayload = {
+            waiter_id: waiterId,
+            customer_id: savedCustomerId,
+            table_no: tableNumber,
+            order_time: new Date().toISOString(),
+            status: "Pending",
+            total_amount: total
+        };
+
+        try {
+            const response = await createOrder(orderPayload, token);
+
+            if (response.data.success) {
+                alert("Order sent to backend!");
+            }
+        } catch (err) {
+            console.error("Order API Error:", err);
+            alert("Failed to send order!");
         }
 
         currentOrders.forEach((item) => {
@@ -131,15 +189,13 @@ const WaiterDashboard = () => {
             ]);
         });
 
-        alert("Order Sent to Kitchen!");
-
         setCurrentOrders([]);
         setTableNumber("");
-    };
+};
 
-    // ------------------------------
-    // STATS
-    // ------------------------------
+
+
+
     const [timeFilter, setTimeFilter] = useState("today");
 
     const tableStats = { today: 6, week: 22, month: 75 };
@@ -153,9 +209,6 @@ const WaiterDashboard = () => {
             <div className="dashboard-container">
                 <h2 className="page-title">Waiter Dashboard</h2>
 
-                {/* ---------------------- */}
-                {/* CUSTOMER FORM */}
-                {/* ---------------------- */}
                 <div className="card section-card">
                     <h3><FaUsers /> Add Customer Info</h3>
 
@@ -167,9 +220,6 @@ const WaiterDashboard = () => {
                     </div>
                 </div>
 
-                {/* ---------------------- */}
-                {/* MENU ITEMS */}
-                {/* ---------------------- */}
                 <div className="card section-card">
                     <h3><FaUtensils /> Menu Items</h3>
 
@@ -197,9 +247,6 @@ const WaiterDashboard = () => {
                    <Link to="/allproducts" className="view-btn">View All</Link>
                 </div>
 
-                {/* ---------------------- */}
-                {/* CURRENT ORDERS */}
-                {/* ---------------------- */}
                 {currentOrders.length > 0 && (
                     <div className="card section-card">
                         <h3><FaClipboardList /> Current Orders</h3>

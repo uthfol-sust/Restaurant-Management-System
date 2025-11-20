@@ -26,10 +26,13 @@ func (r *customerRepository) Create(customer *models.Customer) (*models.Customer
 	query := `INSERT INTO customers(name, phone, email)
 			  VALUES ( ?, ?, ?)`
 
-	_, err := r.db.Exec(query, customer.Name, customer.Phone, customer.Email)
+	res, err := r.db.Exec(query, customer.Name, customer.Phone, customer.Email)
 	if err != nil {
 		return nil, err
 	}
+
+	id , _ := res.LastInsertId()
+	customer.ID = int(id)
 
 	return customer, nil
 }

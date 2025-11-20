@@ -1,13 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import Navbar from "../../components/Navbar";
 import "../../styles/Table.css";
-import  "../../styles/Auth.css"
+import "../../styles/Auth.css";
+
+import {
+    getStaffs,
+    updateStaff,
+    deleteStaff,
+} from "../../api/usersApi"
 
 const Users = () => {
-    const [users, setUsers] = useState([
-        { id: 1, name: "John Doe", email: "john@example.com", role: "Waiter", phone: "01710000000" },
-        { id: 2, name: "Admin User", email: "admin@rest.com", role: "Admin", phone: "01820000000" },
-    ]);
+    const token  = localStorage.getItem("token");
+
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const [showModal, setShowModal] = useState(false);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
@@ -23,7 +29,21 @@ const Users = () => {
         phone: "",
     });
 
-    // ----------------- OPEN EDIT -------------------
+    const loadUsers = async () => {
+        try {
+            const res = await getStaffs(token);
+            setUsers(res.data.data); 
+        } catch (err) {
+            console.error("Error loading users:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadUsers();
+    }, []);
+
     const openEdit = (u) => {
         setIsEdit(true);
         setSelectedID(u.id);
@@ -31,18 +51,28 @@ const Users = () => {
         setShowModal(true);
     };
 
-    // ----------------- SAVE CHANGES -------------------
-    const handleSave = () => {
-        const updatedUsers = users.map((u) =>
-            u.id === selectedID ? formData : u
-        );
-        setUsers(updatedUsers);
-        setShowModal(false);
+    const handleSave = async () => {
+        try {
+            await updateStaff(selectedID, formData, token);
+
+            const updatedUsers = users.map((u) =>
+                u.id === selectedID ? formData : u
+            );
+            setUsers(updatedUsers);
+
+            setShowModal(false);
+        } catch (err) {
+            console.error("Error updating user:", err);
+        }
     };
 
-    // ----------------- DELETE USER -------------------
-    const confirmDelete = () => {
-        setUsers(users.filter((u) => u.id !== selectedID));
+    const confirmDelete = async () => {
+        try {
+            await deleteStaff(selectedID, token);
+            setUsers(users.filter((u) => u.id !== selectedID));
+        } catch (err) {
+            console.error("Error deleting user:", err);
+        }
         setShowDeletePopup(false);
     };
 
@@ -53,45 +83,48 @@ const Users = () => {
             <div className="table-container">
                 <h2>Users Management</h2>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th><th>Name</th><th>Email</th>
-                            <th>Role</th><th>Phone</th><th>Actions</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {users.map((u) => (
-                            <tr key={u.id}>
-                                <td>{u.id}</td>
-                                <td>{u.name}</td>
-                                <td>{u.email}</td>
-                                <td>{u.role}</td>
-                                <td>{u.phone}</td>
-
-                                <td className="action-btns">
-                                    <button className="edit-btn" onClick={() => openEdit(u)}>
-                                        Edit
-                                    </button>
-
-                                    <button
-                                        className="delete-btn"
-                                        onClick={() => {
-                                            setSelectedID(u.id);
-                                            setShowDeletePopup(true);
-                                        }}
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
+                {loading ? (
+                    <p>Loading users...</p>
+                ) : (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th><th>Name</th><th>Email</th>
+                                <th>Role</th><th>Phone</th><th>Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+
+                        <tbody>
+                            {users.map((u ,index) => (
+                                <tr key={index}>
+                                    <td>{u.id}</td>
+                                    <td>{u.name}</td>
+                                    <td>{u.email}</td>
+                                    <td>{u.role}</td>
+                                    <td>{u.phone}</td>
+
+                                    <td className="action-btns">
+                                        <button className="edit-btn" onClick={() => openEdit(u)}>
+                                            Edit
+                                        </button>
+
+                                        <button
+                                            className="delete-btn"
+                                            onClick={() => {
+                                                setSelectedID(u.id);
+                                                setShowDeletePopup(true);
+                                            }}
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )}
             </div>
 
-            {/* ----------------- EDIT POPUP ------------------- */}
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal">
@@ -146,7 +179,7 @@ const Users = () => {
                 </div>
             )}
 
-            {/* ----------------- DELETE CONFIRMATION POPUP ------------------- */}
+
             {showDeletePopup && (
                 <div className="modal-overlay">
                     <div className="modal delete-modal">

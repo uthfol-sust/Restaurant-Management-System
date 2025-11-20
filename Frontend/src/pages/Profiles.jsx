@@ -58,22 +58,31 @@ const ProfilePage = () => {
             alert("Profile picture updated!");
             setProfile({
                 ...profile,
-                profile_image: res.data.data, // full Cloudinary URL
+                profile_image: res.data.data, 
             });
         } catch (err) {
             console.log("Upload error:", err.response?.data || err);
         }
     };
 
+    const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login"; 
+    };
+
+
     if (loading) return <p style={{ textAlign: "center" }}>Loading...</p>;
     if (!profile) return <p style={{ textAlign: "center" }}>User not found.</p>;
 
     return (
-        <div>
+        <div className="App">
             <Navbar />
 
             <div className="profile-container">
-                {/* Avatar with edit icon */}
+                 <button onClick={handleLogout} className="logout-btn">
+                    Logout
+                </button>
+
                 <div className="avatar-wrapper">
                     <img
                         src={
@@ -118,15 +127,7 @@ const ProfilePage = () => {
                 <div className="profile-box">
                     <strong>Phone:</strong> {profile.phone_no || "-"}
                 </div>
-                <div className="profile-box">
-                    <strong>Shift:</strong> {profile.shift_time || "-"}
-                </div>
-                <div className="profile-box">
-                    <strong>Joined:</strong>{" "}
-                    {new Date(profile.join_at).toLocaleString()}
-                </div>
 
-                {/* Edit profile button */}
                 <button
                     onClick={() => (window.location.href = "/profile/edit")}
                     className="edit-bton"

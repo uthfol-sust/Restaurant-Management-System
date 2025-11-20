@@ -43,3 +43,8 @@
 .link{
  margin-right: 24px;
 }
+
+.profile-avatarNav{
+  width: 60px;
+  border-radius: 50%;
+}

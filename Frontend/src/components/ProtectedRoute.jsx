@@ -3,19 +3,20 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
-    const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
 
-    if (!user) {
-        return <Navigate to="/login" />;
-    }
+  if (loading) {
+    return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>Loading...</div>;
+  }
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
-    const role = user.role.toLowerCase();
-
-    if (!allowedRoles.includes(role)) {
-        return <Navigate to="/" />;
-    }
-
-    return children;
+  if (!allowedRoles.includes(user.role)) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  return children;
 };
 
 export default ProtectedRoute;

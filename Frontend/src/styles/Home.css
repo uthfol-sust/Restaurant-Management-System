@@ -2,7 +2,12 @@
     --max-width: 1200px;
     --text-dark: #ffcc33;
 }
-
+.App {
+    font-family: 'Times New Roman', Times, serif;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
 .home-page {
     height:80vh;
     width: 100%;
@@ -11,7 +16,7 @@
     background-position: center;
     background-repeat: no-repeat;
     position: relative;
-    margin-top: 4.5%;
+    margin-top: 2%;
 }
 
 .overlay {

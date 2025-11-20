@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar.jsx";
-import "../../styles/Auth.css";
 import "../../styles/Admin.css";
 
 import {
@@ -19,9 +18,11 @@ import { getStaffs } from "../../api/usersApi.jsx";
 import { getInventories } from "../../api/inventoryApi";
 import { getProducts } from "../../api/ProductApi.jsx";
 import { getSuppliers } from "../../api/suppliersApi.jsx";
+import { getCustomers } from "../../api/customersApi.jsx";
 
 const AdminDashboard = () => {
     const [staffsCount,setStafsCount] = useState(0)
+    const [custonerCount, setCustomerCount] = useState(0)
     const [inventoryCount, setInventoryCount] = useState(0);
     const [productCount ,setProductCount ] = useState(0)
     const [supplierCount, setSuppliersCount] = useState(0)
@@ -30,35 +31,43 @@ const AdminDashboard = () => {
     const token = localStorage.getItem("token"); 
 
     useEffect(() => {
-        const fetchCount = async () => {
-            try {
-                const resStaffs =await getStaffs(token)
-                setStafsCount(resStaffs.data.length)
+    const fetchCount = async () => {
+        try {
+            const resStaffs = await getStaffs(token);
+            const staffs = resStaffs?.data.data || [];
+            setStafsCount(Array.isArray(staffs) ? staffs.length : 0);
 
-                const data = await getInventories();
-                setInventoryCount(data.data.length);
+            const resCustomer = await getCustomers(token)
+            const customer = resCustomer?.data ||[];
+            setCustomerCount(Array.isArray(customer)?customer.length : 0);
 
-                 const productResponse = await getProducts(token);
-                 setProductCount(Array.isArray(productResponse.data.data) ? productResponse.data.data.length : 0);
+            const inventoryRes = await getInventories();
+            const inventoryData = inventoryRes?.data || [];
+            setInventoryCount(Array.isArray(inventoryData) ? inventoryData.length : 0);
 
-                 const SuppliersRes = await getSuppliers(token)
-                 setSuppliersCount(SuppliersRes.data.data.length)
+            const productResponse = await getProducts(token);
+            const productData = productResponse?.data?.data || [];
+            setProductCount(Array.isArray(productData) ? productData.length : 0);
 
+            const suppliersRes = await getSuppliers(token);
+            const suppliersData = suppliersRes?.data?.data || [];
+            setSuppliersCount(Array.isArray(suppliersData) ? suppliersData.length : 0);
 
-            } catch (err) {
-                console.error("Error fetching inventory count:", err);
-                setStafsCount(0)
-                setInventoryCount(0);
-                setProductCount(0);
-                setSuppliersCount(0)
-            }
-        };
-        fetchCount();
-        
-    }, []);
+        } catch (err) {
+            console.error("Error fetching inventory count:", err);
+            setStafsCount(0);
+            setInventoryCount(0);
+            setProductCount(0);
+            setSuppliersCount(0);
+        }
+    };
+
+    fetchCount();
+}, []);
+
 
     const cards = [
-        { title: "Customers", count: 20, icon: <FaUsers />, link: "/admin/users" },
+        { title: "Customers", count: custonerCount, icon: <FaUsers />, link: "/admin/customers" },
         { title: "Staffs", count: staffsCount, icon: <FaUserFriends />, link: "/admin/users" },
         { title: "Total Orders", count: 450, icon: <FaShoppingCart />, link: "/admin/orders" },
         { title: "Our Products", count: productCount, icon: <FaUtensils />, link: "/admin/products" },
@@ -81,7 +90,7 @@ const AdminDashboard = () => {
                         <Link to={card.link} key={index} className="dashboard-card">
                             <div className="card-icon">{card.icon}</div>
                             <h3>{card.title}</h3>
-                            <p className="count">{card.count}</p>
+                            <p className="countnum">{card.count}</p>
                         </Link>
                     ))}
                 </div>

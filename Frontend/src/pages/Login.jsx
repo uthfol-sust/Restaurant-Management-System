@@ -58,7 +58,7 @@ function Login() {
     };
 
     return (
-        <div className="App">
+        <div className="app">
             <Navbar />
 
             <div className="auth-container">

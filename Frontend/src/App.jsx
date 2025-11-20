@@ -16,7 +16,7 @@ import AdminDashboard from "./pages/Admin/AdminDashboard";
 import KitchenDashboard from "./pages/Kitchen/KitchenDeshboard";
 import ProtectedRoute from "./components/ProtectedRoute.jsx"
 // Admin Pages
-import Users from "./pages/Admin/User.jsx";
+import Staffs from "./pages/Admin/User.jsx";
 import Products from "./pages/Admin/Products.jsx";
 import Inventory from "./pages/Admin/Inventory.jsx";
 import Orders from "./pages/Admin/Orders.jsx";
@@ -26,6 +26,7 @@ import Suppliers from "./pages/Admin/Suppliers.jsx";
 import Purchases from "./pages/Admin/Purchases.jsx";
 import Reports from "./pages/Admin/Reports.jsx";
 import ProfilePage from "./pages/Profiles.jsx";
+import Customers from "./pages/Admin/customers.jsx";
 
 function App() {
   return (
@@ -48,14 +49,12 @@ function App() {
                 <ProtectedRoute allowedRoles={["admin"]}>
                   <Routes>
                     <Route path="dashboard" element={<AdminDashboard />} />
-                    <Route path="users" element={<Users />} />
+                    <Route path="users" element={<Staffs />} />
+                    <Route path="customers" element={<Customers />} />
                     <Route path="products" element={<Products />} />
                     <Route path="inventory" element={<Inventory />} />
                     <Route path="orders" element={<Orders />} />
-
-                    {/* FIXED ROUTE */}
                     <Route path="order/:id" element={<OrderDetails />} />
-
                     <Route path="payments" element={<Payments />} />
                     <Route path="suppliers" element={<Suppliers />} />
                     <Route path="purchases" element={<Purchases />} />
@@ -64,6 +63,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
 
 
 

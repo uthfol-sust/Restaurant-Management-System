@@ -113,6 +113,7 @@ func Migrate(db *sql.DB) error {
 				order_id INT PRIMARY KEY,
 				waiter_id INT ,
 				customer_id INT,
+				table_no INT NOT NULL
 				order_time DATETIME ,
 				status VARCHAR(20) ,
 				total_amount DOUBLE ,

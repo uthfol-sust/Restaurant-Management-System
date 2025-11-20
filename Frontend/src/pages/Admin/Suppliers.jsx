@@ -30,7 +30,7 @@ const Suppliers = () => {
     const fetchSuppliers = async () => {
       try {
         const res = await getSuppliers(token);
-        setSuppliers(res.data.data);
+        setSuppliers(res?.data?.data || []);
       } catch (err) {
         console.error("Error fetching suppliers:", err);
       }
